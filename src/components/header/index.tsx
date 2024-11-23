@@ -41,7 +41,7 @@ const Header = () => {
         <>
             {open && <MyModal open={open} setOpen={setOpen} info={info} />}
             <div className="px-10 mx-auto flex items-center justify-between pt-5">
-                <div className="font-bold text-lg">Insurarchy.</div>
+                <div className="font-bold text-lg">Insurarchy</div>
 
                 {!isConnected ? (
                     <ShimmerButton
