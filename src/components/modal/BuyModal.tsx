@@ -1,10 +1,4 @@
-import {
-    Button,
-    Dialog,
-    DialogPanel,
-    DialogTitle,
-    Input,
-} from '@headlessui/react';
+import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 
 const BuyModal = ({
     open,
