@@ -35,7 +35,7 @@ const Header = () => {
         if (isConnected) {
             handler();
         }
-    }, [isConnected, setUserDetails]);
+    }, [isConnected]);
 
     return (
         <>
