@@ -6,6 +6,7 @@ import { Input } from '@headlessui/react';
 import IconToggle from '../toggle';
 import { Tooltip } from 'react-tooltip';
 import BuyModal from '../modal/BuyModal';
+import Share from '../Disclosure';
 export const HoverEffect = ({
     title,
     outcomes,
@@ -55,8 +56,7 @@ export const HoverEffect = ({
                     )}
                 </AnimatePresence>
                 <Card>
-                    <div className="flex items-center gap-x-5 border border-b-[#fff3] border-x-0 border-t-0 pb-3 pt-2">
-                        <div>img</div>
+                    <div className="flex items-center gap-x-5 border border-b-[#fff3] border-x-0 border-t-0 pb-3 pt-2 justify-between">
                         <CardTitle isOpen={isOpen} className={`font-semibold`}>
                             {title}
                         </CardTitle>
@@ -210,7 +210,7 @@ export const Card = ({
     children: React.ReactNode;
 }) => {
     return (
-        <div className="rounded-2xl h-[270px] w-full pb-3 pt-2 overflow-hidden bg-black border border-transparent dark:border-white/[0.2] group-hover:border-slate-700 relative z-20">
+        <div className="rounded-2xl  w-full mb-2 pt-2 overflow-hidden bg-black border border-transparent dark:border-white/[0.2] group-hover:border-slate-700 relative z-20">
             <div className="relative z-50">
                 <div className="border border-b-[#fff3] text-center border-x-0 border-t-0 font-semibold flex items-center justify-center gap-x-2 text-sm pb-1">
                     <svg
@@ -230,6 +230,8 @@ export const Card = ({
                     Pool Size $1.5m
                 </div>
                 <div className="px-4">{children}</div>
+
+                <Share />
             </div>
         </div>
     );

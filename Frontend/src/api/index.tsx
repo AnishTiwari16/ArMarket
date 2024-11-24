@@ -1,6 +1,6 @@
 const generateWalletApi = async () => {
     const resp = await fetch(
-        'https://6008-2405-201-4024-580a-207c-b99b-9fe4-e48a.ngrok-free.app/generate-wallet',
+        'https://armarket-production.up.railway.app/generate-wallet',
         { method: 'POST' }
     );
     const data = await resp.json();
@@ -14,7 +14,7 @@ const handleTrxApi = async ({
     data: any;
 }) => {
     const resp = await fetch(
-        'https://6008-2405-201-4024-580a-207c-b99b-9fe4-e48a.ngrok-free.app/post-transaction',
+        'https://armarket-production.up.railway.app/post-transaction',
         {
             method: 'POST',
             headers: {
