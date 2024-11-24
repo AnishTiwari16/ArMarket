@@ -4,6 +4,7 @@ const Arweave = require("arweave");
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
+const cors = require("cors");
 const { TurboFactory } = require("@ardrive/turbo-sdk");
 
 const app = express();
@@ -11,6 +12,7 @@ const port = 3000;
 
 // Middleware for JSON parsing
 app.use(express.json());
+app.use(cors());
 
 // Setup Multer for file uploads
 const upload = multer({ dest: "uploads/" });
@@ -94,6 +96,72 @@ app.post("/upload-file", upload.single("file"), async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Generate Wallet
+app.post("/generate-wallet", async (req, res) => {
+  try {
+    const wallet = await arweave.wallets.generate();
+    const addr = await arweave.wallets.getAddress(wallet);
+    console.log(addr);
+    await arweave.api.get(`mint/${addr}/10000000000000000`);
+
+    res.status(200).json({ wallet, addr });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get Wallet Address
+app.post("/get-address", async (req, res) => {
+  try {
+    const { wallet } = req.body;
+    const addr = await arweave.wallets.getAddress(wallet);
+    res.status(200).json({ addr });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get Wallet Balance
+app.get("/balance/:addr", async (req, res) => {
+  try {
+    const { addr } = req.params;
+    const balance = await arweave.wallets.getBalance(addr);
+    res.status(200).json({ addr, balance });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Post Transaction
+app.post("/post-transaction", async (req, res) => {
+  try {
+    const { wallet, data } = req.body;
+    const transaction = await arweave.createTransaction({ data }, wallet);
+
+    // Sign and post the transaction
+    await arweave.transactions.sign(transaction, wallet);
+    const response = await arweave.transactions.post(transaction);
+
+    // Mine the transaction
+    await arweave.api.get("mine");
+
+    res.status(200).json({ transaction, response });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Fetch Transaction by ID
+app.get("/transaction/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const transaction = await arweave.transactions.get(id);
+    res.status(200).json(transaction);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
