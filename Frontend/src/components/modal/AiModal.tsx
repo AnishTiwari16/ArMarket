@@ -1,6 +1,9 @@
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { FlipText } from '../text/FlipText';
-
+import { AnimatePresence, motion } from 'framer-motion';
+const framerProps = {
+    hidden: { rotateX: -90, opacity: 0 },
+    visible: { rotateX: 0, opacity: 1 },
+};
 export default function AiModal({
     isOpen,
     setIsOpen,
@@ -13,7 +16,7 @@ export default function AiModal({
     function close() {
         setIsOpen(false);
     }
-
+    const heading = `Generating AI risk analysis for ${title}`;
     return (
         <>
             <Dialog
@@ -32,11 +35,24 @@ export default function AiModal({
                                 as="h3"
                                 className="font-semibold text-base/7  text-white"
                             >
-                                <FlipText
-                                    className="font-semibold text-black dark:text-white"
-                                    word={`Generating AI risk analysis for ${title}
-                                prediction`}
-                                />
+                                <AnimatePresence mode="wait">
+                                    {heading.split('').map((char, i) => (
+                                        <motion.span
+                                            key={i}
+                                            initial="hidden"
+                                            animate="visible"
+                                            exit="hidden"
+                                            variants={framerProps}
+                                            transition={{
+                                                duration: 0.5,
+                                                delay: i * 0.08,
+                                            }}
+                                            className="origin-center drop-shadow-sm"
+                                        >
+                                            {char}
+                                        </motion.span>
+                                    ))}
+                                </AnimatePresence>
                             </DialogTitle>
                             <p className="mt-2 text-sm/6 text-white/50">
                                 Your payment has been successfully submitted.
