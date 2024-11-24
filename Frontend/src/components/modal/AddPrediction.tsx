@@ -16,9 +16,13 @@ import RotatingDotsLoader from '../loaders';
 const AddPredictionModal = ({
     open,
     setOpen,
+    cardsData,
+    setCardsData,
 }: {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    cardsData: any;
+    setCardsData: React.Dispatch<React.SetStateAction<any>>;
 }) => {
     function close() {
         setOpen(false);
@@ -34,6 +38,16 @@ const AddPredictionModal = ({
     const { mutateAsync: handleApiTrx, isPending } = useMutation({
         mutationFn: handleTrxApi,
         onSuccess: () => {
+            setCardsData([
+                ...cardsData,
+                {
+                    title: predictionDetails.question,
+                    desc: predictionDetails.description,
+                    outcomes: predictionDetails.outcomes,
+                    yes: '0%',
+                    no: '0%',
+                },
+            ]);
             toast.success('Prediction created successfully 🎉', toastStyles);
             close();
         },
@@ -106,7 +120,7 @@ const AddPredictionModal = ({
                             onChange={(e) => {
                                 setPredictionDetails({
                                     ...predictionDetails,
-                                    outcomes: [e.target.value],
+                                    outcomes: e.target.value.split(','),
                                 });
                             }}
                         />

@@ -8,6 +8,7 @@ module.exports = {
                     'shimmer-slide var(--speed) ease-in-out infinite alternate',
                 'spin-around':
                     'spin-around calc(var(--speed) * 2) infinite linear',
+                gradient: 'gradient 6s linear infinite',
             },
             keyframes: {
                 'spin-around': {
@@ -27,6 +28,11 @@ module.exports = {
                 'shimmer-slide': {
                     to: {
                         transform: 'translate(calc(100cqw - 100%), 0)',
+                    },
+                },
+                gradient: {
+                    to: {
+                        backgroundPosition: 'var(--bg-size) 0',
                     },
                 },
             },

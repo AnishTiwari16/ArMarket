@@ -5,9 +5,17 @@ import AddPredictionModal from '../modal/AddPrediction';
 
 const Cards = () => {
     const [open, setOpen] = useState(false);
+    const [cardsData, setCardsData] = useState(CARDS);
     return (
         <>
-            {open && <AddPredictionModal open={open} setOpen={setOpen} />}
+            {open && (
+                <AddPredictionModal
+                    open={open}
+                    setOpen={setOpen}
+                    cardsData={cardsData}
+                    setCardsData={setCardsData}
+                />
+            )}
             <div className="px-10 mx-auto">
                 <div className="grid grid-cols-4 pt-8  gap-4 rounded-lg">
                     {TOP_CARDS.map((elem, index) => (
@@ -34,7 +42,7 @@ const Cards = () => {
                     + Add
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-4 pb-10">
-                    {CARDS.map((elem, index) => (
+                    {cardsData.map((elem, index) => (
                         <HoverEffect {...elem} key={index} />
                     ))}
                 </div>

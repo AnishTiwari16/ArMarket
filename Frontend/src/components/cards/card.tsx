@@ -12,11 +12,15 @@ export const HoverEffect = ({
     outcomes,
     desc,
     key,
+    yes,
+    no,
 }: {
     title: string;
     outcomes: string[];
     desc: string;
     key: number;
+    yes: string;
+    no: string;
 }) => {
     let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const [sliderValue, setSliderValue] = useState([2]);
@@ -55,7 +59,7 @@ export const HoverEffect = ({
                         />
                     )}
                 </AnimatePresence>
-                <Card>
+                <Card title={title}>
                     <div className="flex items-center gap-x-5 border border-b-[#fff3] border-x-0 border-t-0 pb-3 pt-2 justify-between">
                         <CardTitle isOpen={isOpen} className={`font-semibold`}>
                             {title}
@@ -172,7 +176,7 @@ export const HoverEffect = ({
                                     >
                                         <div> Buy {outcome}</div>
                                         <div className="border-[#fff3] border-l p-2 pr-0 text-center">
-                                            {index === 0 ? '60%' : '40%'}
+                                            {index === 0 ? yes : no}
                                         </div>
                                     </div>
                                 ))}
@@ -205,9 +209,11 @@ export const HoverEffect = ({
 export const Card = ({
     className,
     children,
+    title,
 }: {
     className?: string;
     children: React.ReactNode;
+    title: string;
 }) => {
     return (
         <div className="rounded-2xl  w-full mb-2 pt-2 overflow-hidden bg-black border border-transparent dark:border-white/[0.2] group-hover:border-slate-700 relative z-20">
@@ -231,7 +237,7 @@ export const Card = ({
                 </div>
                 <div className="px-4">{children}</div>
 
-                <Share />
+                <Share title={title} />
             </div>
         </div>
     );
