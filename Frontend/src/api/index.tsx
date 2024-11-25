@@ -52,10 +52,33 @@ const uploadFile = async ({ file: formData }: { file: FormData }) => {
     const data = await resp.json();
     return data;
 };
+const sendTestTokensApi = async ({
+    processId,
+    recipient,
+    quantity,
+}: {
+    processId: string;
+    recipient: string;
+    quantity: number;
+}) => {
+    const resp = await fetch(
+        'https://ao-transfer-production.up.railway.app/transfer',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ processId, recipient, quantity }),
+        }
+    );
+    const data = await resp.json();
+    return data;
+};
 export {
     generateWalletApi,
     handleTrxApi,
     getBalance,
     getAiResponse,
     uploadFile,
+    sendTestTokensApi,
 };

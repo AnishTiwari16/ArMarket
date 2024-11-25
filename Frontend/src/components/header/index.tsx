@@ -9,9 +9,9 @@ import { ArAccount } from 'arweave-account';
 import { message, createDataItemSigner, result } from '@permaweb/aoconnect';
 import SlideToggle from '../toggle/SlideToggle';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { generateWalletApi, getBalance } from '../../api';
+import { generateWalletApi, getBalance, sendTestTokensApi } from '../../api';
+import { SquareArrowOutUpRight } from 'lucide-react';
 const processId = 'maAYW2mCi0dJZuJudHkgFMGIPO_nBv-0wXThdkJ-w3Y';
-
 const Header = () => {
     const [isConnected, setIsConnected] = React.useState(false);
     const {
@@ -24,6 +24,7 @@ const Header = () => {
     const [open, setOpen] = React.useState(false);
     const [info, setInfo] = React.useState<any>({});
     const [userBalance, setUserBalance] = React.useState('');
+    const [trxId, setTrxId] = React.useState('');
     const { mutateAsync: addGenerateWalletMutation, isPending } = useMutation({
         mutationFn: generateWalletApi,
         onSuccess: (data) => {
@@ -34,6 +35,17 @@ const Header = () => {
         queryKey: ['balance'],
         queryFn: () => getBalance(userWallet.addr),
         enabled: !!userWallet.addr,
+    });
+    const { mutateAsync: sendTestTokens } = useMutation({
+        mutationFn: sendTestTokensApi,
+        onSuccess: (data) => {
+            toast.dismiss();
+            toast.success('Woo Ho your funds have arrived 🎉', toastStyles);
+            setTrxId(data.rawResponse);
+        },
+        onError: () => {
+            toast.error('Error sending test token', toastStyles);
+        },
     });
     const handleConnect = async () => {
         await window.arweaveWallet.connect([
@@ -50,33 +62,7 @@ const Header = () => {
             toast.error('Error generating wallet', toastStyles);
         }
     };
-    const handleSendTestTokenAo = async (addr: string) => {
-        try {
-            toast.loading('Sending test token...', toastStyles);
-            const response = await message({
-                process: processId,
-                tags: [
-                    { name: 'Action', value: 'Transfer' },
-                    {
-                        name: 'Recipient',
-                        value: addr,
-                    },
-                    { name: 'Quantity', value: '1000' },
-                ],
-                signer: createDataItemSigner(window.arweaveWallet),
-            });
-            const r = await result({
-                message: response,
-                process: processId,
-            });
-            console.log(r);
-            toast.dismiss();
-            toast.success('Woo Ho your funds have arrived 🎉', toastStyles);
-        } catch (err) {
-            toast.dismiss();
-            toast.error('Error sending test token', toastStyles);
-        }
-    };
+
     const fetchUserBalance = async (addr: string) => {
         const response = await message({
             process: processId,
@@ -104,10 +90,14 @@ const Header = () => {
             });
             const resp = await fetchUserBalance(info.addr); //fetch balance from contract
 
-            if (resp <= '0') {
-                await handleSendTestTokenAo(info.addr).then(() => {
-                    fetchUserBalance(info.addr);
+            if (resp) {
+                toast.loading('Sending test token...', toastStyles);
+                await sendTestTokens({
+                    processId: processId,
+                    recipient: info.addr,
+                    quantity: 50,
                 });
+                fetchUserBalance(info.addr);
             }
         };
         if (isConnected) {
@@ -118,7 +108,7 @@ const Header = () => {
     return (
         <>
             {open && <MyModal open={open} setOpen={setOpen} info={info} />}
-            <div className="px-10 mx-auto flex items-center justify-between pt-5">
+            <div className="px-12 mx-auto flex items-center justify-between pt-5">
                 <div className="font-bold text-lg">ArMarket</div>
 
                 {!userWallet.addr && !isConnected ? (
@@ -192,7 +182,16 @@ const Header = () => {
                                   '  ' +
                                   (data?.balance / 1e18).toString().slice(0, 5)}
                         </div>
-
+                        {trxId && (
+                            <a
+                                href={`https://www.ao.link/#/message/${trxId}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-white pr-4"
+                            >
+                                <SquareArrowOutUpRight size={15} />
+                            </a>
+                        )}
                         <div
                             className="text-white"
                             onClick={async () => {

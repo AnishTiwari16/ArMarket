@@ -110,7 +110,8 @@ export const HoverEffect = ({
                                 />
                             </div>
                             <div className="pt-4 text-green-600 font-bold text-sm">
-                                Winning amount: <span>$100 (100%)</span>
+                                Winning amount:{' '}
+                                <span>${sliderValue[0] * 1.5} (50%)</span>
                             </div>
                             <div className="text-sm font-medium  justify-between w-full cursor-pointer pt-1 flex items-center">
                                 <div className="flex items-center gap-x-2">
@@ -155,7 +156,9 @@ export const HoverEffect = ({
                                 } rounded-md py-1 text-center font-semibold cursor-pointer`}
                             >
                                 Buy {outcomes[selectedIndex]}
-                                <div className="text-[11px]">To win $50</div>
+                                <div className="text-[11px]">
+                                    To win ${sliderValue[0] * 1.5}
+                                </div>
                             </div>
                         </motion.div>
                     ) : (

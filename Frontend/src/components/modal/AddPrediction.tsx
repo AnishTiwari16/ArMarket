@@ -66,7 +66,6 @@ const AddPredictionModal = ({
             }
         } catch (e) {
             toast.error('Error creating prediction', toastStyles);
-            console.log(e);
         }
     };
     return (

@@ -1,8 +1,9 @@
+import Coin from '../../assets/coin.png';
 export const TOP_CARDS = [
     { title: 'Trump won, now what?' },
     { title: '2024 Election Results' },
     { title: 'Mention Markets' },
-    { title: 'Start Trading' },
+    { title: 'Start Trading', img: Coin },
 ];
 export const CARDS = [
     {
