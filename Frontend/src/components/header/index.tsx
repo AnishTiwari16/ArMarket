@@ -90,12 +90,12 @@ const Header = () => {
             });
             const resp = await fetchUserBalance(info.addr); //fetch balance from contract
 
-            if (resp) {
+            if (resp <= '0') {
                 toast.loading('Sending test token...', toastStyles);
                 await sendTestTokens({
                     processId: processId,
                     recipient: info.addr,
-                    quantity: 50,
+                    quantity: 100,
                 });
                 fetchUserBalance(info.addr);
             }
