@@ -15,6 +15,10 @@ interface GlobalStore {
     }) => void;
     userWallet: { wallet: string; addr: string };
     setUserWallet: (userWallet: { wallet: string; addr: string }) => void;
+    testnetTrx: string;
+    setTestnetTrx: (testnetTrx: string) => void;
+    isToggled: boolean;
+    setIsToggled: (isToggled: boolean) => void;
 }
 
 const useGlobalStore = create<GlobalStore>()((set) => ({
@@ -22,6 +26,10 @@ const useGlobalStore = create<GlobalStore>()((set) => ({
     setUserDetails: (userDetails) => set({ userDetails }),
     userWallet: { wallet: '', addr: '' },
     setUserWallet: (userWallet) => set({ userWallet }),
+    testnetTrx: '',
+    setTestnetTrx: (testnetTrx) => set({ testnetTrx }),
+    isToggled: false,
+    setIsToggled: (isToggled) => set({ isToggled }),
 }));
 
 export default useGlobalStore;

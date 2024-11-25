@@ -11,6 +11,7 @@ export const CARDS = [
         outcomes: ['Yes', 'No'],
         yes: '60%',
         no: '40%',
+        poolSize: '$100k',
     },
     {
         title: 'Fed decision in December?',
@@ -18,6 +19,7 @@ export const CARDS = [
         outcomes: ['Yes', 'No'],
         yes: '60%',
         no: '40%',
+        poolSize: '$100k',
     },
     {
         title: 'Fed decision in December?',
@@ -25,6 +27,7 @@ export const CARDS = [
         outcomes: ['Yes', 'No'],
         yes: '60%',
         no: '40%',
+        poolSize: '$100k',
     },
     {
         title: 'Fed decision in December?',
@@ -32,6 +35,7 @@ export const CARDS = [
         outcomes: ['Yes', 'No'],
         yes: '60%',
         no: '40%',
+        poolSize: '$100k',
     },
     {
         title: 'Fed decision in December?',
@@ -39,6 +43,7 @@ export const CARDS = [
         outcomes: ['Yes', 'No'],
         yes: '20%',
         no: '80%',
+        poolSize: '$100k',
     },
     {
         title: 'Fed decision in December?',
@@ -46,6 +51,7 @@ export const CARDS = [
         outcomes: ['Yes', 'No'],
         yes: '60%',
         no: '40%',
+        poolSize: '$100k',
     },
     {
         title: 'Fed decision in December?',
@@ -53,6 +59,7 @@ export const CARDS = [
         outcomes: ['Yes', 'No'],
         yes: '60%',
         no: '40%',
+        poolSize: '$100k',
     },
     {
         title: 'Fed decision in December?',
@@ -60,5 +67,6 @@ export const CARDS = [
         outcomes: ['Yes', 'No'],
         yes: '60%',
         no: '40%',
+        poolSize: '$100k',
     },
 ];

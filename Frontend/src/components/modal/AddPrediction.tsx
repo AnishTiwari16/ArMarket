@@ -12,6 +12,7 @@ import { useMutation } from '@tanstack/react-query';
 import { handleTrxApi } from '../../api';
 import useGlobalStore from '../../store';
 import RotatingDotsLoader from '../loaders';
+import { queryClient } from '../..';
 
 const AddPredictionModal = ({
     open,
@@ -27,7 +28,7 @@ const AddPredictionModal = ({
     function close() {
         setOpen(false);
     }
-    const { userWallet } = useGlobalStore();
+    const { userWallet, isToggled } = useGlobalStore();
     const [predictionDetails, setPredictionDetails] = useState({
         question: '',
         description: '',
@@ -37,7 +38,9 @@ const AddPredictionModal = ({
     });
     const { mutateAsync: handleApiTrx, isPending } = useMutation({
         mutationFn: handleTrxApi,
+
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['balance'] });
             setCardsData([
                 ...cardsData,
                 {
@@ -54,10 +57,13 @@ const AddPredictionModal = ({
     });
     const handleSubmit = async () => {
         try {
-            await handleApiTrx({
-                wallet: userWallet.wallet,
-                data: JSON.stringify(predictionDetails),
-            });
+            if (isToggled) {
+            } else {
+                await handleApiTrx({
+                    wallet: userWallet.wallet,
+                    data: JSON.stringify(predictionDetails),
+                });
+            }
         } catch (e) {
             toast.error('Error creating prediction', toastStyles);
             console.log(e);

@@ -1,5 +1,12 @@
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
+import toast from 'react-hot-toast';
+import Markdown from 'react-markdown';
+import { getAiResponse, uploadFile } from '../../api';
+import { toastStyles } from '../../lib/helper';
+import useGlobalStore from '../../store';
+import SpinningCubeLoader from '../loaders/Flip';
 const framerProps = {
     hidden: { rotateX: -90, opacity: 0 },
     visible: { rotateX: 0, opacity: 1 },
@@ -8,15 +15,55 @@ export default function AiModal({
     isOpen,
     setIsOpen,
     title,
+    outcomes,
+    poolSize,
 }: {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     title: string;
+    outcomes: string[];
+    poolSize: string;
 }) {
     function close() {
         setIsOpen(false);
     }
+
+    const betDetails = `There is a bet placed on ${title} with these options ${outcomes} and pool size of ${poolSize} analyse the risk for the bet`;
+    const { testnetTrx, setTestnetTrx } = useGlobalStore();
+    const { data, isLoading } = useQuery({
+        queryKey: ['ai-response'],
+        queryFn: async () => {
+            const resp = await getAiResponse(betDetails);
+            generateUploadFile();
+            return resp;
+        },
+        enabled: !testnetTrx,
+    });
+    const { mutateAsync: generateUploadFile } = useMutation({
+        mutationFn: async () => {
+            const textContent =
+                typeof data === 'object'
+                    ? JSON.stringify(data, null, 2)
+                    : String(data);
+            const blob = new Blob([textContent], { type: 'text/plain' });
+            const file = new File([blob], 'ai-response.txt', {
+                type: 'text/plain',
+            });
+
+            const formData = new FormData();
+            formData.append('file', file);
+            return await uploadFile({ file: formData });
+        },
+        onSuccess: (data) => {
+            toast.success(
+                'AI risk analysis uploaded successfully to ArDrive',
+                toastStyles
+            );
+            setTestnetTrx(data.id);
+        },
+    });
     const heading = `Generating AI risk analysis for ${title}`;
+
     return (
         <>
             <Dialog
@@ -54,19 +101,43 @@ export default function AiModal({
                                     ))}
                                 </AnimatePresence>
                             </DialogTitle>
-                            <p className="mt-2 text-sm/6 text-white/50">
-                                Your payment has been successfully submitted.
-                                We’ve sent you an email with all of the details
-                                of your order.
-                            </p>
-                            <div className="mt-4">
-                                <Button
-                                    className="inline-flex items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-gray-700"
-                                    onClick={close}
-                                >
-                                    Got it, thanks!
-                                </Button>
-                            </div>
+                            {isLoading ? (
+                                <SpinningCubeLoader />
+                            ) : (
+                                <Markdown className="mt-2 text-[#D1D1D1A6] text-sm text-white bg-black rounded-lg h-[150px] overflow-y-auto p-4">
+                                    {data}
+                                </Markdown>
+                            )}
+                            {testnetTrx && (
+                                <>
+                                    <div className="pt-5 text-white flex items-center text-sm justify-between">
+                                        <a
+                                            href={`https://arweave.net/${testnetTrx}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="hover:underline cursor-pointer"
+                                        >
+                                            Download file
+                                        </a>
+                                        <a
+                                            href={`https://viewblock.io/arweave/tx/${testnetTrx}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="hover:underline cursor-pointer"
+                                        >
+                                            Verify on viewblock
+                                        </a>
+                                    </div>
+                                    <div className="mt-6">
+                                        <Button
+                                            className="inline-flex items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-gray-700"
+                                            onClick={close}
+                                        >
+                                            Got it, thanks!
+                                        </Button>
+                                    </div>
+                                </>
+                            )}
                         </DialogPanel>
                     </div>
                 </div>

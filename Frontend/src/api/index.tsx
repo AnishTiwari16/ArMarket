@@ -26,4 +26,36 @@ const handleTrxApi = async ({
     const result = await resp.json();
     return result;
 };
-export { generateWalletApi, handleTrxApi };
+const getBalance = async (addr: string) => {
+    const resp = await fetch(
+        `https://armarket-production.up.railway.app/balance/${addr}`
+    );
+    const data = await resp.json();
+    return data;
+};
+const getAiResponse = async (details: string) => {
+    const resp = await fetch(
+        `https://wapo-testnet.phala.network/ipfs/QmXDgi7jbmQjEVdqSuJhWxTpAx5fvgqLzbhPTWg2XGjePk?key=c74d9db176043e5e&chatQuery=${details}`
+    );
+    const data = await resp.json();
+    return data.message;
+};
+const uploadFile = async ({ file: formData }: { file: FormData }) => {
+    const resp = await fetch(
+        'https://armarket-production.up.railway.app/upload-file',
+        {
+            method: 'POST',
+
+            body: formData,
+        }
+    );
+    const data = await resp.json();
+    return data;
+};
+export {
+    generateWalletApi,
+    handleTrxApi,
+    getBalance,
+    getAiResponse,
+    uploadFile,
+};

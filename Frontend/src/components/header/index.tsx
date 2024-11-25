@@ -6,23 +6,34 @@ import toast from 'react-hot-toast';
 import { toastStyles } from '../../lib/helper';
 import MyModal from '../modal';
 import { ArAccount } from 'arweave-account';
-import IconToggle from '../toggle';
+import { message, createDataItemSigner, result } from '@permaweb/aoconnect';
 import SlideToggle from '../toggle/SlideToggle';
-import { QueryClient, useMutation } from '@tanstack/react-query';
-import { generateWalletApi } from '../../api';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { generateWalletApi, getBalance } from '../../api';
+const processId = 'maAYW2mCi0dJZuJudHkgFMGIPO_nBv-0wXThdkJ-w3Y';
 
 const Header = () => {
     const [isConnected, setIsConnected] = React.useState(false);
-    const { userDetails, setUserDetails, userWallet, setUserWallet } =
-        useGlobalStore();
+    const {
+        userDetails,
+        setUserDetails,
+        userWallet,
+        setUserWallet,
+        isToggled,
+    } = useGlobalStore();
     const [open, setOpen] = React.useState(false);
     const [info, setInfo] = React.useState<any>({});
-    const [isToggled, setIsToggled] = React.useState(false);
+    const [userBalance, setUserBalance] = React.useState('');
     const { mutateAsync: addGenerateWalletMutation, isPending } = useMutation({
         mutationFn: generateWalletApi,
         onSuccess: (data) => {
             setUserWallet({ wallet: data.wallet, addr: data.addr });
         },
+    });
+    const { data } = useQuery({
+        queryKey: ['balance'],
+        queryFn: () => getBalance(userWallet.addr),
+        enabled: !!userWallet.addr,
     });
     const handleConnect = async () => {
         await window.arweaveWallet.connect([
@@ -36,9 +47,49 @@ const Header = () => {
         try {
             await addGenerateWalletMutation();
         } catch (e) {
-            console.log(e);
             toast.error('Error generating wallet', toastStyles);
         }
+    };
+    const handleSendTestTokenAo = async (addr: string) => {
+        try {
+            toast.loading('Sending test token...', toastStyles);
+            const response = await message({
+                process: processId,
+                tags: [
+                    { name: 'Action', value: 'Transfer' },
+                    {
+                        name: 'Recipient',
+                        value: addr,
+                    },
+                    { name: 'Quantity', value: '1000' },
+                ],
+                signer: createDataItemSigner(window.arweaveWallet),
+            });
+            const r = await result({
+                message: response,
+                process: processId,
+            });
+            console.log(r);
+            toast.dismiss();
+            toast.success('Woo Ho your funds have arrived 🎉', toastStyles);
+        } catch (err) {
+            toast.dismiss();
+            toast.error('Error sending test token', toastStyles);
+        }
+    };
+    const fetchUserBalance = async (addr: string) => {
+        const response = await message({
+            process: processId,
+            tags: [{ name: 'Action', value: 'Balance' }],
+            signer: createDataItemSigner(window.arweaveWallet),
+            data: addr,
+        });
+        const r = await result({
+            message: response,
+            process: processId,
+        });
+        setUserBalance(r.Messages[0].Data);
+        return r.Messages[0].Data;
     };
     React.useEffect(() => {
         const handler = async () => {
@@ -51,11 +102,19 @@ const Header = () => {
                 name: info.profile.name,
                 bio: info.profile.bio,
             });
+            const resp = await fetchUserBalance(info.addr); //fetch balance from contract
+
+            if (resp <= '0') {
+                await handleSendTestTokenAo(info.addr).then(() => {
+                    fetchUserBalance(info.addr);
+                });
+            }
         };
         if (isConnected) {
             handler();
         }
     }, [isConnected]);
+
     return (
         <>
             {open && <MyModal open={open} setOpen={setOpen} info={info} />}
@@ -71,10 +130,7 @@ const Header = () => {
                         >
                             Testnet
                         </p>
-                        <SlideToggle
-                            isToggled={isToggled}
-                            setIsToggled={setIsToggled}
-                        />
+                        <SlideToggle />
                         <p
                             className={`${
                                 isToggled && 'text-[#905abc]'
@@ -124,10 +180,17 @@ const Header = () => {
                                 );
                             }}
                         >
-                            {userDetails.address ||
-                                userWallet.addr.slice(0, 6) +
-                                    '...' +
-                                    userWallet.addr.slice(-6)}
+                            {isToggled
+                                ? userDetails.address +
+                                  ' ' +
+                                  (userBalance
+                                      ? userBalance + ' USDC'
+                                      : 'Fetching balance...')
+                                : userWallet.addr.slice(0, 6) +
+                                  '...' +
+                                  userWallet.addr.slice(-6) +
+                                  '  ' +
+                                  (data?.balance / 1e18).toString().slice(0, 5)}
                         </div>
 
                         <div

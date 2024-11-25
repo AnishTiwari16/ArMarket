@@ -1,12 +1,11 @@
-import React, { useState, useContext, createContext, ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import React, { createContext, ReactNode, useContext } from 'react';
+import useGlobalStore from '../../store';
 
 interface SlideToggleProps {
     onToggle?: (toggled: boolean) => void;
     onLabel?: string;
     offLabel?: string;
-    isToggled: boolean;
-    setIsToggled?: any;
 }
 
 interface SlideToggleContextType {
@@ -78,9 +77,9 @@ const SlideToggle: React.FC<SlideToggleProps> = ({
     onToggle,
     offLabel,
     onLabel,
-    isToggled,
-    setIsToggled,
 }) => {
+    const { isToggled, setIsToggled } = useGlobalStore();
+
     const handleToggle = () => {
         const newState = !isToggled;
         setIsToggled(newState);

@@ -4,12 +4,26 @@ import { useState } from 'react';
 import AiModal from '../modal/AiModal';
 import { AnimatedGradientText } from '../text/ShinnyText';
 
-const Share = ({ title }: { title: string }) => {
+const Share = ({
+    title,
+    outcomes,
+    poolSize,
+}: {
+    title: string;
+    outcomes: string[];
+    poolSize: string;
+}) => {
     const [open, setOpen] = useState(false);
     return (
         <>
             {open && (
-                <AiModal isOpen={open} setIsOpen={setOpen} title={title} />
+                <AiModal
+                    isOpen={open}
+                    setIsOpen={setOpen}
+                    title={title}
+                    outcomes={outcomes}
+                    poolSize={poolSize}
+                />
             )}
             <Disclosure
                 as="div"
