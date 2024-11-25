@@ -77,10 +77,10 @@ const Share = ({
                                     <div className="h-[1px] w-full bg-[#E6CBCB29]" />
                                     <div className="pt-6 pb-2 px-4 text-sm flex items-center justify-between">
                                         <div>Ends on</div>
-                                        <div>30 Dec 20224</div>
+                                        <div>30 Dec 2024</div>
                                     </div>
 
-                                    <div className="flex items-center justify-center  py-2 text-sm w-full text-center gap-x-4">
+                                    <div className="flex items-center justify-center  pb-2 text-sm w-full text-center gap-x-4">
                                         <motion.div
                                             whileHover={{ scale: 0.95 }}
                                             whileTap={{ scale: 0.8 }}

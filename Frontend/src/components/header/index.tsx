@@ -11,6 +11,7 @@ import SlideToggle from '../toggle/SlideToggle';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { generateWalletApi, getBalance, sendTestTokensApi } from '../../api';
 import { SquareArrowOutUpRight } from 'lucide-react';
+import Logo from '../../assets/logoar.png';
 const processId = 'maAYW2mCi0dJZuJudHkgFMGIPO_nBv-0wXThdkJ-w3Y';
 const Header = () => {
     const [isConnected, setIsConnected] = React.useState(false);
@@ -109,7 +110,16 @@ const Header = () => {
         <>
             {open && <MyModal open={open} setOpen={setOpen} info={info} />}
             <div className="px-12 mx-auto flex items-center justify-between pt-5">
-                <div className="font-bold text-lg">ArMarket</div>
+                <div className="font-bold text-lg flex items-center gap-x-2">
+                    <img
+                        src={Logo}
+                        alt="logo"
+                        height={80}
+                        width={80}
+                        className="rounded-lg"
+                    />
+                    ArMarket
+                </div>
 
                 {!userWallet.addr && !isConnected ? (
                     <div className="flex items-center gap-x-4">

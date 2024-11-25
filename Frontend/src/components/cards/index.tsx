@@ -8,6 +8,13 @@ import { Input } from '@headlessui/react';
 const Cards = () => {
     const [open, setOpen] = useState(false);
     const [cardsData, setCardsData] = useState(CARDS);
+    const [search, setSearch] = useState('');
+    const finalData = search
+        ? cardsData.filter((elem) =>
+              elem.title.toLowerCase().includes(search.toLowerCase())
+          )
+        : cardsData;
+
     return (
         <>
             {open && (
@@ -50,11 +57,10 @@ const Cards = () => {
                             Top
                         </div>
                         <Input
-                            value={''}
-                            className=" block w-full rounded-lg  bg-white/5 py-1.5 px-3 text-sm/6 text-white focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25 border border-white/25"
-                            // onChange={(e) =>
-                            //     setSliderValue([parseInt(e.target.value)])
-                            // }
+                            value={search}
+                            placeholder="Search by market"
+                            className=" block w-full rounded-lg  bg-white/5 py-2 px-3 text-sm/6 text-white focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25 border border-white/25"
+                            onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
                     <div
@@ -65,9 +71,15 @@ const Cards = () => {
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-4 pb-10">
-                    {cardsData.map((elem, index) => (
-                        <HoverEffect {...elem} key={index} />
-                    ))}
+                    {finalData.length > 0 ? (
+                        finalData.map((elem, index) => (
+                            <HoverEffect {...elem} key={index} />
+                        ))
+                    ) : (
+                        <div className="text-white">
+                            No Prediction data found
+                        </div>
+                    )}
                 </div>
             </div>
         </>
