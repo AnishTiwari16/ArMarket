@@ -37,6 +37,8 @@ export const HoverEffect = ({
                     selectedIndex={selectedIndex}
                     setOpen={setShowModal}
                     option={outcomes[selectedIndex]}
+                    userInput={sliderValue[0]}
+                    outcome={outcomes[selectedIndex]}
                 />
             )}
             <div

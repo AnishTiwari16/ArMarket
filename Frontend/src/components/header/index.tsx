@@ -12,7 +12,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { generateWalletApi, getBalance, sendTestTokensApi } from '../../api';
 import { SquareArrowOutUpRight } from 'lucide-react';
 import Logo from '../../assets/logoar.png';
-const processId = 'maAYW2mCi0dJZuJudHkgFMGIPO_nBv-0wXThdkJ-w3Y';
+export const processId = 'maAYW2mCi0dJZuJudHkgFMGIPO_nBv-0wXThdkJ-w3Y';
 const Header = () => {
     const [isConnected, setIsConnected] = React.useState(false);
     const {
