@@ -43,7 +43,7 @@ const BuyModal = ({
                     name: 'Recipient',
                     value: 'NUMygtth1T5LGKObzjFD76VnZymqFkpoJ51sMK5OBds',
                 },
-                { name: 'Quantity', value: userInput.toString() },
+                { name: 'Quantity', value: (userInput + 10 ** 12).toString() },
             ],
             signer: createDataItemSigner(window.arweaveWallet),
         });

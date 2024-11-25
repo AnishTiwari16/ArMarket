@@ -34,17 +34,17 @@ export default function AiModal({
         queryKey: ['ai-response'],
         queryFn: async () => {
             const resp = await getAiResponse(betDetails);
-            generateUploadFile();
+            generateUploadFile(resp);
             return resp;
         },
         enabled: !testnetTrx,
     });
     const { mutateAsync: generateUploadFile } = useMutation({
-        mutationFn: async () => {
+        mutationFn: async (fileData) => {
             const textContent =
-                typeof data === 'object'
-                    ? JSON.stringify(data, null, 2)
-                    : String(data);
+                typeof fileData === 'object'
+                    ? JSON.stringify(fileData, null, 2)
+                    : String(fileData);
             const blob = new Blob([textContent], { type: 'text/plain' });
             const file = new File([blob], 'ai-response.txt', {
                 type: 'text/plain',
